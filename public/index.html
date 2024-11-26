@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
+  <title>Login & WebSocket Client</title>
+  <link rel="stylesheet" href="style.css"> <!-- Link to CSS file -->
 </head>
 <body>
-  <div class="login-container">
+  <!-- Login Form Section -->
+  <div id="login-container" class="login-container">
     <h2>Login</h2>
     <form id="login-form">
       <div class="form-group">
@@ -22,6 +23,67 @@
     </form>
     <p id="login-error" class="error-message"></p> <!-- Error message -->
   </div>
-  <script src="login.js"></script> <!-- Link to JavaScript file -->
+
+  <!-- WebSocket Client Section (Initially Hidden) -->
+  <div id="websocket-client-container" style="display: none;">
+    <h2>WebSocket Client</h2>
+    <div id="messages"></div>
+
+    <h3>Encrypt a File</h3>
+    <form id="encrypt-form">
+      <input type="file" id="encrypt-file" />
+      <button type="submit">Encrypt File</button>
+    </form>
+
+    <h3>Decrypt a File</h3>
+    <form id="decrypt-form">
+      <input type="file" id="decrypt-file" />
+      <button type="submit">Decrypt File</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="login.js"></script> <!-- Link to JavaScript file for login -->
+  <script src="websocket_client.js"></script> <!-- Link to JavaScript file for WebSocket client -->
+
+  <script>
+    // Handling login form submission
+    const loginForm = document.getElementById('login-form');
+    const loginContainer = document.getElementById('login-container');
+    const websocketClientContainer = document.getElementById('websocket-client-container');
+    const loginError = document.getElementById('login-error');
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Authenticate the user via the API (you can adapt this based on your API)
+      fetch('/api/authenticate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Invalid credentials');
+        }
+      })
+      .then(data => {
+        if (data.auth) {
+          // Show WebSocket Client section and hide login form
+          loginContainer.style.display = 'none';
+          websocketClientContainer.style.display = 'block';
+        }
+      })
+      .catch(error => {
+        loginError.textContent = error.message;
+      });
+    });
+  </script>
+
 </body>
 </html>

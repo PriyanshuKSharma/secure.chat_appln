@@ -17,6 +17,7 @@ export const decryptFile = (encryptedText) => {
   const encryptedBuffer = Buffer.from(encryptedHex, 'hex');
   const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
   let decrypted = decipher.update(encryptedBuffer);
-  decrypted = Buffer.concat([decrypted, cipher.final()]);
+  decrypted = Buffer.concat([decrypted, decipher.final()]); // Use `decipher.final()` instead of `cipher.final()`
   return decrypted;
 };
+

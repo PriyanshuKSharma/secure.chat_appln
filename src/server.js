@@ -38,16 +38,62 @@ const decrypt = (text) => {
   return decrypted;
 };
 
+const encryptBuffer = (buffer) => {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv);
+  let encrypted = cipher.update(buffer);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return iv.toString('hex') + ':' + encrypted.toString('hex');
+};
+
+const decryptBuffer = (encryptedHex) => {
+  if (!encryptedHex || typeof encryptedHex !== 'string') {
+    throw new Error('Invalid encrypted data');
+  }
+  
+  const parts = encryptedHex.split(':');
+  if (parts.length !== 2) {
+    throw new Error('Invalid encrypted format');
+  }
+  
+  const [ivHex, encryptedDataHex] = parts;
+  if (!ivHex || !encryptedDataHex) {
+    throw new Error('Missing encryption components');
+  }
+  
+  const iv = Buffer.from(ivHex, 'hex');
+  const encryptedBuffer = Buffer.from(encryptedDataHex, 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
+  let decrypted = decipher.update(encryptedBuffer);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted;
+};
+
 const app = express();
 const port = 8082;
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'public')));
 
-// Simulated user database
+// Social worker training database
 const users = {
-  'user1': 'password1',
-  'user2': 'password2',
-  'user3': 'password3'
+  'sw_trainee1': 'forensics2024',
+  'sw_trainee2': 'evidence123',
+  'sw_supervisor': 'admin2024',
+  'forensics_trainer': 'trainer123'
+};
+
+// Evidence handling log
+const evidenceLog = [];
+
+const logEvidence = (action, filename, user, timestamp = new Date()) => {
+  evidenceLog.push({
+    id: evidenceLog.length + 1,
+    action,
+    filename,
+    user,
+    timestamp: timestamp.toISOString(),
+    hash: crypto.createHash('sha256').update(filename + user + timestamp).digest('hex').substring(0, 8)
+  });
 };
 
 app.get('/', (req, res) => {
@@ -68,30 +114,97 @@ app.post('/api/authenticate', (req, res) => {
   }
 });
 
-// Endpoint to handle file encryption
-app.post('/api/encrypt-file', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).send('No file uploaded.');
+// Evidence encryption endpoint
+app.post('/api/encrypt-evidence', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).send('No evidence file uploaded.');
   
-  const fileBuffer = req.file.buffer.toString('utf-8');
-  const encryptedFile = encrypt(fileBuffer);  // Encrypt the file content
+  const token = req.headers.authorization?.split(' ')[1];
+  let user = 'unknown';
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    user = decoded.id;
+  } catch (err) {}
+  
+  // Create forensic metadata
+  const metadata = {
+    originalName: req.file.originalname,
+    mimeType: req.file.mimetype,
+    size: req.file.size,
+    encryptedBy: user,
+    encryptedAt: new Date().toISOString(),
+    evidenceId: 'EVD-' + Date.now(),
+    chainOfCustody: [{
+      action: 'ENCRYPTED',
+      by: user,
+      timestamp: new Date().toISOString()
+    }]
+  };
+  
+  const metadataStr = JSON.stringify(metadata);
+  const metadataLength = Buffer.byteLength(metadataStr, 'utf8');
+  const combinedBuffer = Buffer.concat([
+    Buffer.from(metadataLength.toString().padStart(10, '0'), 'utf8'),
+    Buffer.from(metadataStr, 'utf8'),
+    req.file.buffer
+  ]);
+  
+  const encryptedFile = encryptBuffer(combinedBuffer);
+  logEvidence('ENCRYPTED', req.file.originalname, user);
 
-  // Send the encrypted file as a response
-  const buffer = Buffer.from(encryptedFile, 'utf-8');
-  res.setHeader('Content-Type', 'application/octet-stream');
-  res.setHeader('Content-Disposition', 'attachment; filename="encrypted-file.enc"');
-  res.send(buffer);
+  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Content-Disposition', `attachment; filename="${metadata.evidenceId}.enc"`);
+  res.send(encryptedFile);
 });
 
-// Endpoint to handle file decryption
-app.post('/api/decrypt-file', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).send('No file uploaded.');
+// Evidence decryption endpoint
+app.post('/api/decrypt-evidence', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).send('No evidence file uploaded.');
 
-  const encryptedContent = req.file.buffer.toString('utf-8');
-  const decryptedFile = decrypt(encryptedContent);  // Decrypt the file content
+  const token = req.headers.authorization?.split(' ')[1];
+  let user = 'unknown';
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    user = decoded.id;
+  } catch (err) {}
 
-  res.setHeader('Content-Type', 'application/octet-stream');
-  res.setHeader('Content-Disposition', 'attachment; filename="decrypted-file.txt"');
-  res.send(decryptedFile);
+  try {
+    const encryptedContent = req.file.buffer.toString('utf8');
+    const decryptedBuffer = decryptBuffer(encryptedContent);
+    
+    // Extract forensic metadata
+    const metadataLength = parseInt(decryptedBuffer.slice(0, 10).toString('utf8'));
+    const metadataStr = decryptedBuffer.slice(10, 10 + metadataLength).toString('utf8');
+    const metadata = JSON.parse(metadataStr);
+    const fileContent = decryptedBuffer.slice(10 + metadataLength);
+    
+    // Update chain of custody
+    metadata.chainOfCustody.push({
+      action: 'DECRYPTED',
+      by: user,
+      timestamp: new Date().toISOString()
+    });
+    
+    logEvidence('DECRYPTED', metadata.originalName, user);
+
+    res.setHeader('Content-Type', metadata.mimeType || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${metadata.originalName}"`);
+    res.setHeader('X-Evidence-Metadata', JSON.stringify(metadata));
+    res.send(fileContent);
+  } catch (error) {
+    console.error('Decryption error:', error.message);
+    res.status(400).send('Failed to decrypt evidence file: ' + error.message);
+  }
+});
+
+// Evidence log endpoint
+app.get('/api/evidence-log', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    jwt.verify(token, secretKey);
+    res.json(evidenceLog);
+  } catch (err) {
+    res.status(401).send('Unauthorized');
+  }
 });
 
 const server = app.listen(port, () => {
@@ -115,7 +228,16 @@ wss.on('connection', (ws, req) => {
 
     ws.on('message', (data) => {
       const decryptedMessage = decrypt(data.toString());
-      ws.send(encrypt('Response: ' + decryptedMessage));
+      // Forensics training chat responses
+      const responses = [
+        'Evidence secured. Remember to document chain of custody.',
+        'Digital forensics tip: Always create bit-for-bit copies.',
+        'Training note: Maintain evidence integrity at all times.',
+        'Best practice: Use write-blocking tools when imaging devices.',
+        'Remember: Document everything in your forensic report.'
+      ];
+      const response = responses[Math.floor(Math.random() * responses.length)];
+      ws.send(encrypt(`Forensics Trainer: ${response}`));
     });
 
     ws.on('close', () => {

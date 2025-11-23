@@ -1,14 +1,15 @@
-# secure.chat_appln
+# Digital Forensics Training Platform for Social Workers
 
 ## Project Description
-secure.chat_appln is a secure chat application that provides encrypted real-time communication between clients using WebSocket. It features user authentication with JWT, file encryption and decryption, and secure message exchange using AES-256-CBC encryption.
+A specialized training platform designed to teach social workers proper digital evidence handling procedures. This secure application provides hands-on experience with evidence encryption, chain of custody management, and forensic best practices using AES-256-CBC encryption.
 
 ## Features
-- User authentication with JWT tokens
-- AES-256-CBC encryption for messages and files
-- File upload and download with encryption/decryption
-- Real-time encrypted chat using WebSocket
-- Simple web frontend for interaction
+- Role-based authentication (Trainees, Supervisors, Trainers)
+- Evidence encryption/decryption with forensic metadata
+- Chain of custody tracking and logging
+- Evidence activity audit trail
+- Real-time forensics guidance chat
+- Secure evidence file handling training
 
 ## Installation
 
@@ -35,42 +36,45 @@ secure.chat_appln is a secure chat application that provides encrypted real-time
 
 ## Usage
 
-### Authentication
-Send a POST request to `/api/authenticate` with JSON body:
-```json
-{
-  "username": "user1",
-  "password": "password1"
-}
+### Training Accounts
+Use these credentials to access different training roles:
 ```
-On success, you will receive a JWT token to use for WebSocket connections.
+Trainee: sw_trainee1 / forensics2024
+Trainee: sw_trainee2 / evidence123
+Supervisor: sw_supervisor / admin2024
+Trainer: forensics_trainer / trainer123
+```
 
-### File Encryption
-- POST `/api/encrypt-file` with a file upload to receive the encrypted file.
-- POST `/api/decrypt-file` with an encrypted file upload to receive the decrypted file.
+### Evidence Management Training
+- **Encrypt Evidence**: Upload case files to practice secure evidence storage
+- **Decrypt Evidence**: Access encrypted evidence while maintaining chain of custody
+- **View Evidence Log**: Monitor all evidence handling activities
 
-### WebSocket Chat
-Connect to the WebSocket server at:
-```
-ws://localhost:8082?token=YOUR_JWT_TOKEN
-```
-Messages sent and received are encrypted using AES-256-CBC.
+### Learning Objectives
+1. Understand proper evidence encryption procedures
+2. Learn chain of custody requirements
+3. Practice secure digital evidence handling
+4. Document forensic activities appropriately
+
+## Training Modules
+1. **Evidence Encryption**: Learn to secure sensitive case files
+2. **Chain of Custody**: Understand evidence tracking requirements
+3. **Forensic Documentation**: Practice proper evidence logging
+4. **Secure Communication**: Use encrypted channels for case discussions
 
 ## Project Structure
-- `src/server.js` - Express server and WebSocket server implementation
-- `src/encryption.js` - Encryption and decryption utilities
-- `auth.js` - Client-side authentication helper
-- `public/` - Frontend static files (HTML, CSS, JS)
-- `encrypted/` and `decrypted/` - Directories for encrypted and decrypted files
+- `src/server.js` - Training platform server with forensics features
+- `src/encryption.js` - Evidence encryption utilities
+- `public/` - Training interface (HTML, CSS, JS)
+- Evidence logging and chain of custody tracking
 
 ## Technologies Used
-- Node.js
-- Express
-- WebSocket (ws)
-- JSON Web Tokens (JWT)
-- AES-256-CBC encryption
-- Multer (file upload handling)
-- dotenv (environment variables)
+- Node.js & Express (Training platform backend)
+- WebSocket (Real-time forensics guidance)
+- JWT (Role-based authentication)
+- AES-256-CBC (Evidence encryption)
+- Forensic metadata tracking
+- Chain of custody logging
 
 ## License
 This project is  not licensed.

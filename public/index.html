@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login & WebSocket Client</title>
-  <link rel="stylesheet" href="style.css"> <!-- Link to CSS file -->
+  <title>Digital Forensics Training Platform</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Login Form Section -->
   <div id="login-container" class="login-container">
-    <h2>Login</h2>
+    <h2>🔍 Digital Forensics Training</h2>
+    <p>Social Worker Evidence Management System</p>
     <form id="login-form">
       <div class="form-group">
         <label for="username">Username</label>
@@ -24,22 +25,36 @@
     <p id="login-error" class="error-message"></p> <!-- Error message -->
   </div>
 
-  <!-- WebSocket Client Section (Initially Hidden) -->
+  <!-- Forensics Training Platform (Initially Hidden) -->
   <div id="websocket-client-container" style="display: none;">
-    <h2>WebSocket Client</h2>
+    <h2>🔒 Evidence Management Training</h2>
     <div id="messages"></div>
+    <div id="training-info">
+      <h4>📚 Training Objectives:</h4>
+      <ul>
+        <li>Learn proper evidence encryption procedures</li>
+        <li>Understand chain of custody requirements</li>
+        <li>Practice secure evidence handling</li>
+      </ul>
+    </div>
 
-    <h3>Encrypt a File</h3>
+    <h3>🔐 Secure Evidence (Encryption)</h3>
+    <p><em>Practice encrypting sensitive case files and digital evidence</em></p>
     <form id="encrypt-form">
-      <input type="file" id="encrypt-file" />
-      <button type="submit">Encrypt File</button>
+      <input type="file" id="encrypt-file" accept=".pdf,.doc,.docx,.jpg,.png,.txt" />
+      <button type="submit">🔒 Encrypt Evidence</button>
     </form>
 
-    <h3>Decrypt a File</h3>
+    <h3>🔓 Access Evidence (Decryption)</h3>
+    <p><em>Decrypt evidence files while maintaining chain of custody</em></p>
     <form id="decrypt-form">
-      <input type="file" id="decrypt-file" />
-      <button type="submit">Decrypt File</button>
+      <input type="file" id="decrypt-file" accept=".enc" />
+      <button type="submit">🔓 Decrypt Evidence</button>
     </form>
+
+    <h3>📋 Evidence Log</h3>
+    <button id="view-log-btn">View Evidence Activity Log</button>
+    <div id="evidence-log" style="display: none;"></div>
   </div>
 
   <!-- Scripts -->
@@ -74,9 +89,19 @@
       })
       .then(data => {
         if (data.auth) {
-          // Show WebSocket Client section and hide login form
+          // Store token for forensics operations
+          localStorage.setItem('forensicsToken', data.token);
+          // Show forensics training platform
           loginContainer.style.display = 'none';
           websocketClientContainer.style.display = 'block';
+          
+          // Welcome message based on user role
+          const username = document.getElementById('username').value;
+          let welcomeMsg = 'Welcome to Digital Forensics Training!';
+          if (username.includes('supervisor')) welcomeMsg = 'Welcome, Supervisor! Monitor trainee activities.';
+          if (username.includes('trainer')) welcomeMsg = 'Welcome, Trainer! Guide social workers in evidence handling.';
+          
+          alert(`👋 ${welcomeMsg}`);
         }
       })
       .catch(error => {

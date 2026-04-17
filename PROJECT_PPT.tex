@@ -1,0 +1,367 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+
+\definecolor{primaryblue}{RGB}{26, 77, 140}
+\definecolor{accentgold}{RGB}{199, 138, 32}
+\definecolor{softgray}{RGB}{82, 82, 82}
+
+\setbeamercolor{title}{fg=primaryblue}
+\setbeamercolor{frametitle}{fg=primaryblue}
+\setbeamercolor{structure}{fg=primaryblue}
+\setbeamercolor{block title}{bg=primaryblue!12, fg=primaryblue}
+\setbeamercolor{block body}{bg=primaryblue!4, fg=black}
+\setbeamercolor{footline}{bg=primaryblue, fg=white}
+
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+
+\title[Secure Digital Evidence Platform]{Secure Digital Evidence Management\\and Forensics Training Platform}
+\subtitle{Project Presentation}
+\author{Neha Gaikwad}
+\institute{School of Engineering\\Ajeenkya DY Patil University, Pune}
+\date{April 2026}
+
+\logo{\includegraphics[height=0.8cm]{horizontal college logo.png}}
+
+\begin{document}
+
+\begin{frame}[plain]
+    \titlepage
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Background and Motivation}
+    \begin{itemize}
+        \item Modern organizations rely heavily on digital documents, images, reports, and case files.
+        \item Sensitive files used in forensics and legal workflows require confidentiality, controlled access, and accountability.
+        \item Ordinary file-sharing systems do not preserve evidence handling history in a meaningful way.
+        \item Academic projects often explain security concepts separately but do not integrate them into one practical workflow.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Problem Statement}
+    \begin{block}{Core Problem}
+        Traditional file handling systems may leave important evidence unencrypted, insufficiently tracked, and vulnerable to unauthorized access or misuse.
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{itemize}
+        \item No structured chain-of-custody awareness
+        \item Weak access control for sensitive files
+        \item Limited visibility into who performed evidence actions
+        \item Lack of an educational platform for secure evidence handling practice
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Objectives, Scope, and End Users}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Objectives}
+        \begin{itemize}
+            \item Secure web platform
+            \item JWT-based access
+            \item AES-256-CBC protection
+            \item Metadata preservation
+            \item Inspection and logging
+        \end{itemize}
+
+        \column{0.46\textwidth}
+        \textbf{Scope and Users}
+        \begin{itemize}
+            \item Encryption and decryption
+            \item Metadata inspection
+            \item Evidence activity log
+            \item WebSocket guidance
+            \item Trainees
+            \item Supervisors
+            \item Trainers
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\section{Concept and Design}
+
+\begin{frame}{Literature and Design Insights}
+    \begin{itemize}
+        \item Digital evidence systems must preserve integrity, confidentiality, and accountability.
+        \item AES is widely accepted for strong and efficient data protection.
+        \item Chain of custody is essential in digital forensics because it documents evidence handling history.
+        \item Secure web applications commonly rely on token-based authentication and protected routes.
+    \end{itemize}
+
+    \begin{block}{Design Decision}
+        The project combines these ideas into a simplified training platform that is realistic enough for demonstration but manageable in an academic setting.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Proposed Solution}
+    \begin{block}{What the Platform Does}
+        The system allows authenticated users to encrypt files into evidence packages, inspect package details, decrypt evidence when needed, and review a log of evidence actions.
+    \end{block}
+
+    \begin{itemize}
+        \item Protects file contents with AES-256-CBC
+        \item Controls access with JWT-based authentication
+        \item Preserves forensic metadata with each package
+        \item Supports custody-aware inspection before decryption
+        \item Records evidence actions for audit visibility
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{System Architecture}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{>{\centering\arraybackslash}m{0.24\textwidth}>{\centering\arraybackslash}m{0.08\textwidth}>{\centering\arraybackslash}m{0.28\textwidth}>{\centering\arraybackslash}m{0.08\textwidth}>{\centering\arraybackslash}m{0.22\textwidth}}
+        \textbf{Frontend}\\
+        HTML, CSS, JavaScript
+        &
+        $\rightarrow$
+        &
+        \textbf{Express Server}\\
+        Auth, encryption, decryption, inspection, logging
+        &
+        $\rightarrow$
+        &
+        \textbf{Outputs}\\
+        Encrypted package, decrypted file, metadata, log
+    \end{tabular}
+    \end{center}
+
+    \vspace{0.4cm}
+
+    \begin{itemize}
+        \item Client-server architecture
+        \item Browser communicates through HTTP requests
+        \item WebSocket channel supports training guidance updates
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Core Modules and Workflow}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \textbf{Major Modules}
+        \begin{itemize}
+            \item Authentication module
+            \item Evidence encryption module
+            \item Evidence decryption module
+            \item Evidence inspection module
+        \end{itemize}
+
+        \column{0.48\textwidth}
+        \begin{itemize}
+            \item Evidence activity log module
+            \item WebSocket guidance module
+            \item User interface dashboard
+        \end{itemize}
+    \end{columns}
+
+    \vspace{0.2cm}
+
+    \begin{block}{Implementation Files}
+        \texttt{src/server.js}, \texttt{public/index.html}, \texttt{public/style.css}, \texttt{public/websocket\_client.js}
+    \end{block}
+\vspace{0.1cm}
+\textbf{Workflow:} Login $\rightarrow$ Token issued $\rightarrow$ Upload file $\rightarrow$ Encrypt package $\rightarrow$ Inspect metadata $\rightarrow$ Decrypt if authorized $\rightarrow$ Log action
+\end{frame}
+
+\section{Implementation}
+
+\begin{frame}{Technology Stack}
+    \begin{table}
+        \centering
+        \begin{tabularx}{\textwidth}{>{\bfseries}l X}
+            \toprule
+            Layer & Technology \\
+            \midrule
+            Frontend & HTML, CSS, JavaScript \\
+            Backend & Node.js, Express.js \\
+            Security & JWT authentication, AES-256-CBC encryption \\
+            File Handling & Multer memory storage, Node.js Buffer processing \\
+            Real-Time Support & WebSocket server \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Security Design}
+    \begin{itemize}
+        \item JWT tokens protect evidence-related routes after login.
+        \item AES-256-CBC encrypts file contents before storage or transfer.
+        \item Every encrypted package includes forensic metadata such as:
+        \begin{itemize}
+            \item original file name
+            \item MIME type
+            \item file size
+            \item evidence ID
+            \item encryption timestamp
+            \item chain-of-custody events
+        \end{itemize}
+        \item Evidence actions are recorded with timestamps and short hashes.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Evidence Package Structure}
+    \begin{block}{Packaging Logic}
+        Before encryption, the system combines:
+    \end{block}
+
+    \begin{enumerate}
+        \item metadata length
+        \item metadata JSON
+        \item original file content
+    \end{enumerate}
+
+    \vspace{0.3cm}
+
+    \begin{block}{Why This Matters}
+        This structure allows the platform to decrypt the package later, recover metadata, inspect details, and maintain simplified chain-of-custody awareness.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Major API Endpoints}
+    \begin{table}
+        \centering
+        \begin{tabularx}{\textwidth}{>{\ttfamily}l X}
+            \toprule
+            Route & Purpose \\
+            \midrule
+            POST /api/authenticate & Validate credentials and issue JWT token \\
+            POST /api/encrypt-evidence & Encrypt uploaded evidence and generate package \\
+            POST /api/decrypt-evidence & Decrypt a valid evidence package \\
+            POST /api/inspect-evidence & Show package metadata before decryption \\
+            GET /api/evidence-log & Retrieve activity history for evidence actions \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}{User Interface Highlights}
+    \begin{itemize}
+        \item Clean login page for secure training access
+        \item Dashboard sections for:
+        \begin{itemize}
+            \item Guidance Feed
+            \item Secure Evidence
+            \item Access Evidence
+            \item Evidence Inspector
+            \item Evidence Activity
+        \end{itemize}
+        \item Minimal layout keeps the demonstration easy to understand
+        \item Role-aware welcome flow improves training context
+    \end{itemize}
+\end{frame}
+
+\section{Evaluation}
+
+\begin{frame}{Testing and Validation}
+    \begin{table}
+        \centering
+        \small
+        \begin{tabularx}{\textwidth}{|X|X|}
+            \hline
+            \textbf{Test Case} & \textbf{Expected Result} \\ \hline
+            Valid login & Token generated and dashboard displayed \\ \hline
+            Invalid login & Error message displayed \\ \hline
+            Encrypt valid file & Downloadable \texttt{.enc} file generated \\ \hline
+            Decrypt valid package & Original file returned \\ \hline
+            Inspect valid package & Metadata displayed successfully \\ \hline
+            View evidence log & Activity records displayed \\ \hline
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Key Results and Discussion}
+    \begin{itemize}
+        \item The platform successfully integrates authentication, encryption, metadata handling, inspection, and logging.
+        \item The Evidence Inspector adds a realistic forensic verification step before decryption.
+        \item The dashboard-based UI improves clarity during demonstration and project review.
+        \item The project shows that cybersecurity concepts can be taught effectively through a working workflow, not just theory.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Sample Demonstration Flow}
+    \begin{enumerate}
+        \item Log in using a valid training account.
+        \item Upload a sample PDF, image, or text file.
+        \item Download the generated encrypted \texttt{.enc} package.
+        \item Inspect the package to view evidence ID, file details, and custody events.
+        \item Decrypt the same package and verify original content recovery.
+        \item Open the evidence activity log to review recorded actions.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Strengths of the Project}
+    \begin{itemize}
+        \item Clear end-to-end secure evidence workflow
+        \item Easy to demonstrate in academic presentations
+        \item Combines web development with cybersecurity concepts
+        \item Includes custody-style logging for evidence awareness
+        \item Modular structure supports future enhancement
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Current Limitations}
+    \begin{itemize}
+        \item Activity log is not yet backed by persistent database storage.
+        \item Role separation is present in training accounts but not fully enforced as advanced RBAC.
+        \item Encryption key should be fully managed through environment configuration.
+        \item The platform is a prototype and not a legal-grade production evidence system.
+        \item Mobile responsiveness and report export can be improved further.
+    \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Future Enhancements}
+    \begin{itemize}
+        \item Add persistent database storage for evidence records
+        \item Implement stronger role-based authorization
+        \item Generate exportable reports for evidence activity
+        \item Improve notifications and dashboard usability
+        \item Prepare the system for cloud hosting
+        \item Optimize the interface for mobile devices
+        \item Move all secrets and keys into environment variables
+        \item Add search and filtering for evidence logs
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+    \begin{block}{Summary}
+        The project delivers a practical and academic-friendly platform for secure digital evidence management by combining authentication, encryption, inspection, decryption, and activity logging in one coherent workflow.
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{itemize}
+        \item Demonstrates real security concepts through implementation
+        \item Supports forensic awareness and evidence accountability
+        \item Provides a solid foundation for future expansion
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+    \begin{center}
+        \vspace{1.2cm}
+        {\Huge \textbf{Thank You}}\\[0.5cm]
+        {\Large Questions and Discussion}
+
+        \vspace{1cm}
+        \includegraphics[height=2.3cm]{horizontal college logo.png}
+
+        \vfill
+        {\large Neha Gaikwad}\\
+        {\large B.Tech Information Technology}
+    \end{center}
+\end{frame}
+
+\end{document}

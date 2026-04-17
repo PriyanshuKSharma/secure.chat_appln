@@ -1,0 +1,542 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black
+}
+
+\onehalfspacing
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\centering}
+  {Chapter \thechapter}
+  {0.5em}
+  {\Huge}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+
+    {\LARGE \textbf{Secure Digital Evidence Management and Forensics Training Platform}\par}
+
+    \vspace{1.5cm}
+    {\large A Project Report submitted in partial fulfillment of the requirements\par}
+    {\large for the award of the degree of\par}
+
+    \vspace{1cm}
+    {\Large \textbf{Bachelor of Technology}\par}
+    {\large in\par}
+    {\Large \textbf{Information Technology}\par}
+
+    \vspace{0.7cm}
+    {\large Submitted by\par}
+    \vspace{0.5cm}
+    {\large Neha Gaikwad\par}
+
+    \vspace{0.7cm}
+    {\large \textit{Under the Guidance of}\par}
+    \vspace{0.5cm}
+    {\large Guide Name\par}
+
+    \vspace{0.8cm}
+    \IfFileExists{university_logo.png}
+    {\includegraphics[width=0.42\textwidth,keepaspectratio]{university_logo.png}\par}
+    {{\Large \textbf{Ajeenkya DY Patil University}\par}}
+
+    \vfill
+    {\large April 2026\par}
+    {\large School of Engineering\par}
+    {\large Your University Name\par}
+\end{titlepage}
+
+% Certificate
+\clearpage
+\thispagestyle{empty}
+\phantomsection
+\addcontentsline{toc}{chapter}{Certificate}
+
+\begin{center}
+    \vspace*{0.5cm}
+    \IfFileExists{horizontal college logo.png}
+    {\includegraphics[height=3.6cm,keepaspectratio]{horizontal college logo.png}}
+    {{\Large \textbf{Ajeenkya DY Patil University | School of Engineering}}}
+\end{center}
+
+\vspace{0.8cm}
+
+\begin{center}
+    {\Huge \bfseries CERTIFICATE}
+\end{center}
+
+\vspace{1.2cm}
+
+{\large\bfseries
+This is to certify that the dissertation entitled ``Secure Digital Evidence Management and Forensics Training Platform'' is a bonafide work of ``Neha Gaikwad'' submitted to the School of Engineering, Ajeenkya DY Patil University, Pune in partial fulfilment of the requirement for the award of the degree of ``Bachelor of Technology in Information Technology''.
+}
+
+\vfill
+
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+    \centering
+    {\Large \bfseries Dr. Sandeep Kulkarni\par}
+    \vspace{0.5cm}
+    {\Large \bfseries Supervisor\par}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \centering
+    {\Large \bfseries Co-Supervisor\par}
+\end{minipage}
+
+\clearpage
+
+\clearpage
+
+% Supervisor Certificate
+\chapter*{SUPERVISOR'S CERTIFICATE}
+\addcontentsline{toc}{chapter}{Supervisor's Certificate}
+
+This is to certify that the thesis entitled \textbf{``Secure Digital Evidence Management and Forensics Training Platform''} submitted by \textbf{Your Name(s)} to \textbf{Your University Name} for the award of the degree of \textbf{Bachelor of Technology} is a record of bona fide project work carried out under my supervision and guidance. The results embodied in this report have not been submitted to any other university or institute for the award of any degree or diploma.
+
+\vspace{2cm}
+
+Guide Name\\
+Department of Information Technology\\
+Your University Name
+
+\clearpage
+
+% Declaration
+\chapter*{DECLARATION OF ORIGINALITY}
+\addcontentsline{toc}{chapter}{Declaration of Originality}
+
+I/We hereby declare that the project report entitled \textbf{``Secure Digital Evidence Management and Forensics Training Platform''} submitted in partial fulfillment of the requirements for the award of the degree of \textbf{Bachelor of Technology in Information Technology} is a record of original work carried out under the supervision and guidance of \textbf{Guide Name}.
+
+This project work has not been submitted elsewhere for any other degree or diploma.
+
+\vspace{1.5cm}
+
+Name(s): \hrulefill
+
+Roll Number(s): \hrulefill
+
+Signature(s): \hrulefill
+
+Date: \hrulefill
+
+\clearpage
+
+% Acknowledgement
+\chapter*{ACKNOWLEDGEMENT}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+
+I/We would like to express our sincere gratitude to our guide, \textbf{Guide Name}, for valuable guidance, encouragement, and constructive suggestions throughout the development of this project. Their support was essential to the successful completion of this work.
+
+We also thank the Head of Department, faculty members, and staff of the School of Engineering for providing the facilities and academic environment needed for this project. We are grateful to our family, friends, and classmates for their constant support and motivation during the preparation of both the project and this report.
+
+\clearpage
+
+% Abstract
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{Abstract}
+
+The increasing use of digital files in professional and institutional environments has created a strong need for secure and accountable data handling systems. In domains such as digital forensics, legal documentation, cybersecurity, and case management, sensitive files must not only be stored safely but also protected from unauthorized access and tracked through a verifiable workflow. This project, titled \textbf{Secure Digital Evidence Management and Forensics Training Platform}, presents a web-based system developed to demonstrate secure evidence handling in a simple and practical manner.
+
+The platform allows authenticated users to log in, encrypt files into evidence packages, inspect encrypted packages, decrypt files when required, and review evidence activity logs. The system is built using \textbf{Node.js}, \textbf{Express.js}, \textbf{HTML}, \textbf{CSS}, and \textbf{JavaScript}. It uses \textbf{AES-256-CBC} encryption to protect file contents and \textbf{JSON Web Token (JWT)} authentication to control access. The application also includes forensic metadata packaging, chain-of-custody style activity tracking, and an evidence inspection module that previews package details before decryption.
+
+The project is both educational and practical. It demonstrates how encryption, authentication, metadata handling, and audit logging can be integrated into one workflow. The system provides a meaningful foundation for future enhancements such as persistent storage, hosting, mobile responsiveness, and report generation.
+
+\clearpage
+
+% TOC
+\tableofcontents
+\clearpage
+
+% List of Figures
+\chapter*{List of Figures}
+\addcontentsline{toc}{chapter}{List of Figures}
+\begin{enumerate}[label=\arabic*.]
+\item High-Level System Architecture Diagram
+\item Evidence Encryption and Decryption Workflow
+\item Evidence Inspection Workflow
+\item Login Page Screenshot
+\item Dashboard Screenshot
+\item Evidence Activity Log Screenshot
+\end{enumerate}
+\clearpage
+
+% List of Tables
+\chapter*{List of Tables}
+\addcontentsline{toc}{chapter}{List of Tables}
+\begin{enumerate}[label=\arabic*.]
+\item Software Requirements
+\item Hardware Requirements
+\item Functional Test Cases
+\item Module Summary
+\end{enumerate}
+\clearpage
+
+% Abbreviations
+\chapter*{LIST OF ABBREVIATIONS}
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+
+\begin{longtable}{p{1.5in} p{4.5in}}
+AES & Advanced Encryption Standard \\
+API & Application Programming Interface \\
+CBC & Cipher Block Chaining \\
+CSS & Cascading Style Sheets \\
+HTML & Hypertext Markup Language \\
+HTTP & Hypertext Transfer Protocol \\
+IT & Information Technology \\
+JSON & JavaScript Object Notation \\
+JWT & JSON Web Token \\
+LMS & Learning Management System \\
+NPM & Node Package Manager \\
+REST & Representational State Transfer \\
+UI/UX & User Interface / User Experience \\
+WS & WebSocket \\
+\end{longtable}
+
+\clearpage
+
+\chapter{INTRODUCTION}
+
+\section{Overview}
+In the present digital era, organizations increasingly depend on electronic documents, images, reports, and other files for operational and investigative work. In domains such as digital forensics, legal records, cybersecurity training, and institutional case handling, these files often contain sensitive information. If such files are handled carelessly, they may be accessed by unauthorized users, modified without approval, or lost without a reliable trace of who handled them. Therefore, secure evidence management has become an important requirement for modern information systems.
+
+This project, \textbf{Secure Digital Evidence Management and Forensics Training Platform}, is a web-based application designed to demonstrate how sensitive files can be handled through a controlled and secure workflow. The platform provides functionality for user authentication, file encryption, file decryption, encrypted package inspection, and evidence activity logging. These features together create a structured workflow that reflects the broader concept of digital evidence handling.
+
+The project is especially valuable in an academic setting because it combines frontend development, backend development, security implementation, file processing, and forensic awareness in one integrated application. Rather than teaching encryption or authentication as isolated concepts, the system demonstrates how these ideas work together in a complete software solution.
+
+\section{Problem Statement}
+Many ordinary file management systems allow users to upload and download files without providing proper protection, access control, or accountability. In such systems, files may remain unencrypted, actions may not be logged, and no reliable chain of handling may exist. This creates serious problems when the files contain confidential or evidentiary information.
+
+Another issue is that many student projects explain security concepts separately but do not integrate them into a realistic workflow. As a result, learners may understand individual topics like encryption or token authentication without understanding how these features operate together in a practical system.
+
+This project addresses that problem by developing a simple but meaningful web platform where authenticated users can encrypt evidence files, inspect metadata, decrypt evidence packages, and review activity logs in one unified system.
+
+\section{Objectives}
+The objectives of the project are:
+
+\begin{enumerate}
+\item To develop a secure web-based platform for handling digital evidence files.
+\item To implement login-based access using JWT authentication.
+\item To encrypt files using AES-256-CBC encryption.
+\item To preserve metadata inside encrypted evidence packages.
+\item To support secure decryption for authenticated users.
+\item To provide an evidence inspection feature before decryption.
+\item To maintain an evidence activity log for chain-of-custody awareness.
+\item To create an interface suitable for academic demonstration and training.
+\item To establish a foundation for future hosting and mobile-responsive deployment.
+\end{enumerate}
+
+\section{Scope of the Project}
+The project is designed as a prototype and training platform rather than a full enterprise forensic management system. Its scope includes:
+
+\begin{itemize}
+\item user login and authentication
+\item evidence encryption
+\item evidence decryption
+\item evidence metadata inspection
+\item evidence activity logging
+\item real-time training guidance using WebSocket
+\end{itemize}
+
+The project is suitable for academic presentation, learning, and future extension.
+
+\chapter{LITERATURE REVIEW}
+
+\section{Digital Evidence Management Systems}
+Digital evidence management systems are designed to collect, store, protect, and track digital files that may be used for analysis, reporting, or legal verification. In real-world applications, such systems are expected to preserve integrity, maintain accountability, and support authorized access. However, many professional-grade systems are complex and not suitable for direct academic replication. This creates a need for simplified educational systems that still demonstrate the main principles of secure evidence handling.
+
+\section{Encryption in Secure File Handling}
+Encryption is an essential security mechanism used to protect data confidentiality. In secure file handling systems, encryption ensures that even if a file is exposed, its contents remain unreadable without the proper key. AES is one of the most widely accepted encryption standards because it provides strong protection and practical performance. In this project, AES-256-CBC is used to secure evidence files before storage or transfer.
+
+\section{Chain of Custody in Digital Forensics}
+Chain of custody refers to the documented history of evidence handling, including collection, transfer, access, and analysis. It is a central idea in digital forensics because it helps establish trust in the evidence. While full legal-grade chain-of-custody systems may include advanced signatures and persistent records, this project implements a simplified version through metadata and activity logging.
+
+\section{Secure Web Application Practices}
+Secure web applications commonly use token-based authentication, protected API routes, structured client-server communication, and secure handling of sensitive input. JSON Web Tokens are widely used because they support stateless authentication and are easy to integrate with frontend applications. This project follows these practices by issuing JWT tokens at login and requiring them for evidence-related routes.
+
+\chapter{SYSTEM ARCHITECTURE AND DESIGN}
+
+\section{Architecture Overview}
+The project follows a client-server architecture. The frontend is developed using HTML, CSS, and JavaScript, while the backend is built using Node.js and Express.js. The browser acts as the client interface and communicates with the server using HTTP requests. Sensitive operations such as authentication, encryption, decryption, inspection, and activity logging are performed on the server side.
+
+\section{Core System Components}
+The major components of the system are:
+
+\begin{enumerate}
+\item Authentication module
+\item Evidence encryption module
+\item Evidence decryption module
+\item Evidence inspection module
+\item Evidence activity log module
+\item WebSocket guidance module
+\item User interface module
+\end{enumerate}
+
+\section{Data Flow and Evidence Workflow}
+The main workflow of the system is:
+
+\begin{enumerate}
+\item User logs in with valid credentials.
+\item Server verifies credentials and returns a JWT token.
+\item User uploads a file for encryption.
+\item Server creates metadata and encrypts the package.
+\item User may inspect the encrypted package before decrypting it.
+\item User decrypts the evidence package if authorized.
+\item System records actions in the evidence log.
+\end{enumerate}
+
+\section{User Interface Design}
+The user interface is organized into clear dashboard sections: login, guidance feed, secure evidence, access evidence, evidence inspector, and evidence activity. The design goal is to keep the interface minimal yet attractive so that the workflow remains understandable during demonstration and report presentation.
+
+\section{Algorithms and Logic Flow}
+The main logic used in the system includes:
+
+\begin{itemize}
+\item AES-256-CBC encryption logic
+\item JWT token generation and verification
+\item metadata packaging and extraction
+\item evidence activity logging
+\item WebSocket-based response handling
+\end{itemize}
+
+Before encryption, metadata length, metadata JSON, and original file content are combined into a single buffer. During decryption or inspection, the server parses this structure to recover the metadata and original content.
+
+\chapter{IMPLEMENTATION AND SECURITY}
+
+\section{Implementation Details}
+The main implementation files of the project are:
+
+\begin{itemize}
+\item \texttt{src/server.js} for backend processing
+\item \texttt{public/index.html} for the main interface
+\item \texttt{public/style.css} for styling
+\item \texttt{public/websocket\_client.js} for frontend interactions
+\end{itemize}
+
+The backend handles API routing, authentication, evidence processing, and WebSocket communication. The frontend manages user interaction, form submission, token handling, and results display.
+
+\section{API Route Implementation}
+The major API routes are:
+
+\begin{itemize}
+\item \texttt{POST /api/authenticate}
+\item \texttt{POST /api/encrypt-evidence}
+\item \texttt{POST /api/decrypt-evidence}
+\item \texttt{POST /api/inspect-evidence}
+\item \texttt{GET /api/evidence-log}
+\end{itemize}
+
+These routes form the functional backbone of the project.
+
+\section{Frontend Module Implementation}
+The frontend supports:
+
+\begin{itemize}
+\item login submission
+\item file encryption request
+\item file decryption request
+\item evidence inspection request
+\item evidence log display
+\item guidance feed updates
+\end{itemize}
+
+After successful login, the JWT token is stored on the client side and reused in protected requests.
+
+\section{Security Implementation}
+The project uses the following security measures:
+
+\begin{enumerate}
+\item JWT-based authentication
+\item AES-256-CBC evidence encryption
+\item authorization checks on protected routes
+\item metadata-preserving encrypted evidence packages
+\item activity logging for evidence actions
+\end{enumerate}
+
+For future improvement, the encryption key should be moved fully into environment configuration instead of remaining fixed in code.
+
+\chapter{RESULTS AND DISCUSSION}
+
+\section{Functional Results}
+The final system successfully performs secure login, evidence encryption, evidence decryption, encrypted package inspection, and evidence activity logging. The addition of the Evidence Inspector gives the project a more realistic and interesting forensic workflow because the user can review package details before directly accessing the content.
+
+\section{Testing and Validation}
+Manual functional testing was performed for the major modules. Sample cases are shown below.
+
+\begin{longtable}{|p{2.4in}|p{2.8in}|}
+\hline
+\textbf{Test Case} & \textbf{Expected Result} \\ \hline
+Valid login & Token generated and dashboard displayed \\ \hline
+Invalid login & Error message displayed \\ \hline
+Encrypt valid file & Downloadable \texttt{.enc} file generated \\ \hline
+Decrypt valid package & Original file returned \\ \hline
+Inspect valid package & Metadata displayed successfully \\ \hline
+View evidence log & Activity records displayed \\ \hline
+\end{longtable}
+
+\section{Discussion}
+The project demonstrates that it is possible to integrate authentication, encryption, metadata handling, inspection, and logging into one coherent academic system without making the platform overly complicated. The dashboard-based interface improves usability and presentation quality, while the backend reflects important ideas from secure application design and digital forensics.
+
+\chapter{CONCLUSION AND FUTURE WORK}
+
+\section{Conclusion}
+The \textbf{Secure Digital Evidence Management and Forensics Training Platform} is a meaningful academic project that combines web development and cybersecurity concepts into a practical application. It demonstrates how secure login, file encryption, evidence metadata, inspection, decryption, and activity logging can be organized into a structured workflow.
+
+The project moves beyond a simple file upload system by treating uploaded files as evidence packages with metadata and handling history. This makes the project especially useful for learning, presentation, and future enhancement.
+
+\section{Future Work}
+The project can be improved further by:
+
+\begin{enumerate}
+\item adding persistent database storage
+\item implementing stronger role-based permissions
+\item supporting exportable reports
+\item improving notification handling inside the UI
+\item preparing the platform for hosting
+\item optimizing the interface for mobile devices
+\item moving all secrets and encryption keys into environment variables
+\item adding search and filtering for evidence logs
+\end{enumerate}
+
+\chapter{USER MANUAL AND DEPLOYMENT GUIDE}
+
+\section{System Requirements}
+\subsection{Software Requirements}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Requirement} \\
+\midrule
+Operating System & Windows / Linux / macOS \\
+Runtime & Node.js \\
+Package Manager & npm \\
+Backend & Express.js \\
+Frontend & HTML, CSS, JavaScript \\
+Browser & Chrome / Edge / Firefox \\
+\bottomrule
+\end{tabular}
+\caption{Software Requirements}
+\end{table}
+
+\subsection{Hardware Requirements}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Minimum Requirement} \\
+\midrule
+Processor & Intel i3 or equivalent \\
+RAM & 4 GB \\
+Storage & 1 GB free space \\
+\bottomrule
+\end{tabular}
+\caption{Hardware Requirements}
+\end{table}
+
+\section{Installation and Setup}
+\begin{enumerate}
+\item Copy or clone the project to your local system.
+\item Open the project folder in a terminal.
+\item Run \texttt{npm install}.
+\item Create a \texttt{.env} file and define \texttt{SECRET\_KEY}.
+\item Start the server using \texttt{npm start}.
+\item Open the project in a browser on the configured local port.
+\end{enumerate}
+
+\section{User Guide}
+\subsection{Login}
+Enter a valid training username and password to access the secure workspace.
+
+\subsection{Encrypt Evidence}
+Choose a supported file and click \texttt{Encrypt Evidence}. The platform will generate an encrypted evidence package for download.
+
+\subsection{Inspect Evidence}
+Choose an encrypted \texttt{.enc} package and click \texttt{Inspect Evidence Package}. The application will show metadata and custody history without downloading the original file.
+
+\subsection{Decrypt Evidence}
+Choose a valid encrypted package and click \texttt{Decrypt Evidence}. The original file will be returned if the package is valid.
+
+\subsection{View Evidence Log}
+Click the evidence activity button to view recorded actions such as encryption, decryption, and inspection.
+
+\section{Troubleshooting}
+
+\begin{longtable}{|p{2in}|p{1.8in}|p{2in}|}
+\hline
+\textbf{Problem} & \textbf{Possible Cause} & \textbf{Solution} \\ \hline
+Invalid credentials & Wrong username or password & Use valid training account \\ \hline
+Cannot POST endpoint & Wrong backend file running & Restart using \texttt{npm start} \\ \hline
+Decryption failed & Corrupted or invalid package & Use a valid \texttt{.enc} file \\ \hline
+Unauthorized request & Missing or invalid token & Log in again \\ \hline
+No log shown & No actions performed yet & Perform an evidence action first \\ \hline
+\end{longtable}
+
+\chapter*{REFERENCES}
+\addcontentsline{toc}{chapter}{References}
+
+\begin{enumerate}
+\item Node.js Documentation
+\item Express.js Documentation
+\item MDN Web Docs for HTML, CSS, and JavaScript
+\item JSON Web Token Documentation
+\item Node.js Crypto Module Documentation
+\item WebSocket Documentation
+\item Standard academic references on digital forensics and chain of custody
+\end{enumerate}
+
+\chapter*{APPENDIX}
+\addcontentsline{toc}{chapter}{Appendix}
+
+\section*{Sample Training Accounts}
+\begin{itemize}
+\item \texttt{sw\_trainee1 / forensics2024}
+\item \texttt{sw\_trainee2 / evidence123}
+\item \texttt{sw\_supervisor / admin2024}
+\item \texttt{forensics\_trainer / trainer123}
+\end{itemize}
+
+\section*{Suggested Figures to Insert}
+\begin{enumerate}
+\item High-level architecture diagram
+\item Login page screenshot
+\item Dashboard screenshot
+\item Encryption workflow screenshot
+\item Evidence inspector screenshot
+\item Evidence activity log screenshot
+\end{enumerate}
+
+\end{document}

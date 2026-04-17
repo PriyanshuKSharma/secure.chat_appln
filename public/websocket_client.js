@@ -47,6 +47,83 @@ document.getElementById('encrypt-form').addEventListener('submit', async (e) => 
   }
 });
 
+document.getElementById('inspect-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const file = document.getElementById('inspect-file').files[0];
+  const resultDiv = document.getElementById('inspection-result');
+
+  if (!file) {
+    alert('Please select an encrypted evidence package to inspect.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  const token = localStorage.getItem('forensicsToken');
+
+  try {
+    const response = await fetch('/api/inspect-evidence', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const data = await response.json();
+    const timeline = data.custodyEvents.length
+      ? data.custodyEvents.map((event) => `
+          <div class="timeline-entry">
+            <strong>${event.action}</strong>
+            <div>By: ${event.by}</div>
+            <div>Time: ${new Date(event.timestamp).toLocaleString()}</div>
+          </div>
+        `).join('')
+      : '<p class="log-empty">No custody events found in this package.</p>';
+
+    resultDiv.innerHTML = `
+      <h4>Evidence Package Inspection</h4>
+      <div class="inspection-grid">
+        <div class="inspection-item">
+          <span>Evidence ID</span>
+          <strong>${data.evidenceId}</strong>
+        </div>
+        <div class="inspection-item">
+          <span>Status</span>
+          <strong>${data.packageStatus}</strong>
+        </div>
+        <div class="inspection-item">
+          <span>Original File</span>
+          <strong>${data.originalName}</strong>
+        </div>
+        <div class="inspection-item">
+          <span>File Type</span>
+          <strong>${data.mimeType}</strong>
+        </div>
+        <div class="inspection-item">
+          <span>File Size</span>
+          <strong>${data.size} bytes</strong>
+        </div>
+        <div class="inspection-item">
+          <span>Encrypted By</span>
+          <strong>${data.encryptedBy}</strong>
+        </div>
+      </div>
+      <h4>Chain of Custody</h4>
+      <div class="timeline">${timeline}</div>
+    `;
+    resultDiv.style.display = 'block';
+  } catch (error) {
+    console.error('Error inspecting evidence:', error);
+    resultDiv.innerHTML = `<p class="error-message">${error.message}</p>`;
+    resultDiv.style.display = 'block';
+  }
+});
+
 // Handle evidence decryption
 document.getElementById('decrypt-form').addEventListener('submit', async (e) => {
   e.preventDefault();

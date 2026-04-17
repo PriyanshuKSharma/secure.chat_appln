@@ -69,6 +69,21 @@ const decryptBuffer = (encryptedHex) => {
   return decrypted;
 };
 
+const parseEvidencePackage = (encryptedHex) => {
+  const decryptedBuffer = decryptBuffer(encryptedHex);
+  const metadataLength = parseInt(decryptedBuffer.slice(0, 10).toString('utf8'), 10);
+
+  if (Number.isNaN(metadataLength) || metadataLength <= 0) {
+    throw new Error('Invalid evidence metadata');
+  }
+
+  const metadataStr = decryptedBuffer.slice(10, 10 + metadataLength).toString('utf8');
+  const metadata = JSON.parse(metadataStr);
+  const fileContent = decryptedBuffer.slice(10 + metadataLength);
+
+  return { metadata, fileContent };
+};
+
 const app = express();
 const port = 8082;
 app.use(express.json());
@@ -169,13 +184,7 @@ app.post('/api/decrypt-evidence', upload.single('file'), (req, res) => {
 
   try {
     const encryptedContent = req.file.buffer.toString('utf8');
-    const decryptedBuffer = decryptBuffer(encryptedContent);
-    
-    // Extract forensic metadata
-    const metadataLength = parseInt(decryptedBuffer.slice(0, 10).toString('utf8'));
-    const metadataStr = decryptedBuffer.slice(10, 10 + metadataLength).toString('utf8');
-    const metadata = JSON.parse(metadataStr);
-    const fileContent = decryptedBuffer.slice(10 + metadataLength);
+    const { metadata, fileContent } = parseEvidencePackage(encryptedContent);
     
     // Update chain of custody
     metadata.chainOfCustody.push({
@@ -193,6 +202,43 @@ app.post('/api/decrypt-evidence', upload.single('file'), (req, res) => {
   } catch (error) {
     console.error('Decryption error:', error.message);
     res.status(400).send('Failed to decrypt evidence file: ' + error.message);
+  }
+});
+
+app.post('/api/inspect-evidence', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).send('No evidence file uploaded.');
+
+  const token = req.headers.authorization?.split(' ')[1];
+  let user = 'unknown';
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    user = decoded.id;
+  } catch (err) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  try {
+    const encryptedContent = req.file.buffer.toString('utf8');
+    const { metadata, fileContent } = parseEvidencePackage(encryptedContent);
+
+    const inspectionSummary = {
+      evidenceId: metadata.evidenceId,
+      originalName: metadata.originalName,
+      mimeType: metadata.mimeType || 'application/octet-stream',
+      size: metadata.size ?? fileContent.length,
+      encryptedBy: metadata.encryptedBy || 'unknown',
+      encryptedAt: metadata.encryptedAt,
+      custodyEvents: Array.isArray(metadata.chainOfCustody) ? metadata.chainOfCustody : [],
+      inspectedBy: user,
+      inspectedAt: new Date().toISOString(),
+      packageStatus: 'Integrity check passed'
+    };
+
+    logEvidence('INSPECTED', inspectionSummary.originalName, user);
+    res.json(inspectionSummary);
+  } catch (error) {
+    console.error('Inspection error:', error.message);
+    res.status(400).send('Failed to inspect evidence file: ' + error.message);
   }
 });
 
